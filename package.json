@@ -1,0 +1,14 @@
+{
+  "name": "vstrokes-socket",
+  "version": "1.0.0",
+  "description": "Socket Chat",
+  "main": "server.js",
+  "author": "Jose Cabarcas",
+  "license": "MIT",
+  "scripts": {
+  	"start": "node server.js"
+  },
+  "dependencies": {
+    "socket.io": "^2.0.3"
+  }
+}

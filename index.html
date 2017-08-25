@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*, main {
+			box-sizing: border-box;
+		}
+		.chat-container {
+			padding: 20px 30px;
+			width: 500px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			border: 1px solid black;
+		}
+		.chat-item {
+			display: flex;
+			border-bottom: 1px solid #d5d5d5;
+			width: 300px;
+		}
+		.image {
+			width: 15px;
+			height: 15px;
+		}
+		.form {
+			padding: 10px 0;
+		}
+		.username {
+			margin-left: 10px;
+			font-size: 10px;
+			font-weight: bold;
+		}
+		.message {
+			font-size: 12px;
+		}
+		[v-cloak] {
+			display: none;
+		}
+		input {
+			padding: 5px;
+			border: 1px solid #d1d1d1;
+			font-size: 12px;
+			height: 25px;
+		}
+		input:focus, button:focus, input:active, button:active {
+			outline: none;
+		}
+		button {
+			border: 1px solid #d5d5d5;
+			background: #d5d5d5;
+			color: black;
+			height: 25px;
+		}
+	</style>
+</head>
+<body>
+
+	<main id="app">
+		<section class="chat-container" v-cloak>
+			<h1>Chat..</h1>
+			<article class="chat-item" v-for="chat in chats">
+				<img src="http://via.placeholder.com/15x15" class="image" />
+				<span class="username">{{ chat.user.username }}</span>
+				<p class="message">{{ chat.user.message }}</p>
+			</article>
+		</section>
+
+		<div class="form">
+			<input type="text" placeholder="Usuario.." id="username" v-model="user.username" />
+			<input type="text" placeholder="Escribe un mensaje.." id="message" v-model="user.message" />
+			<button class="send" id="send" @click="send">Enviar</button>
+		</div>
+	</main>
+
+	<script src="https://unpkg.com/vue"></script>
+	<script src="http://localhost:5000/socket.io/socket.io.js"></script>
+	<script>
+
+		var socket = io.connect('http://localhost:5000');
+
+		
+
+		var app = new Vue({
+		  el: '#app',
+		  data: {
+		    chats: [],
+		    user: {
+		    	username: '',
+		    	message: ''
+		    }
+		  },
+		  mounted: function() {
+		  	socket.on('get message', function (data) {
+			    this.chats.push(data);
+			  }.bind(this));
+		  },
+		  methods: {
+		  	send: function() {
+		  		socket.emit('new message', { 'user': this.user });
+		  	}
+		  }
+		})
+
+	</script>
+</body>
+</html>
